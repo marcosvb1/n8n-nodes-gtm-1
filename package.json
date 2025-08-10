@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-gtm-improved",
+  "name": "@marcosvb1/n8n-nodes-gtm-improved",
   "version": "0.1.0",
   "description": "Node N8N to interact with Google Tag Manager",
   "keywords": [

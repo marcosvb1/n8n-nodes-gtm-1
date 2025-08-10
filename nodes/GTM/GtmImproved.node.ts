@@ -37,7 +37,7 @@ function extractArrayFromListResponse(response: unknown): unknown {
   return response;
 }
 
-export class Gtm implements INodeType {
+export class GtmImproved implements INodeType {
   description:INodeTypeDescription = {
     displayName: 'Google Tag Manager (Improved)',
     name: 'gtmImproved',
