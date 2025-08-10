@@ -1,6 +1,6 @@
 {
-  "name": "n8n-nodes-gtm",
-  "version": "1.0.9",
+  "name": "n8n-nodes-gtm-improved",
+  "version": "0.1.0",
   "description": "Node N8N to interact with Google Tag Manager",
   "keywords": [
     "n8n-community-node-package",
@@ -38,7 +38,7 @@
       "dist/credentials/GoogleTagManagerApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Gtm/Gtm.node.js"
+      "dist/nodes/GTM/GtmImproved.node.js"
     ]
   },
   "devDependencies": {

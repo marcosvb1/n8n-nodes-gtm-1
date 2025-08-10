@@ -9,14 +9,42 @@ import {
   JsonObject 
 } from 'n8n-workflow';
 
+// Helper to simplify list responses: when the API returns an object with a
+// single array property (e.g., { account: [...] }), return just that array.
+function extractArrayFromListResponse(response: unknown): unknown {
+  if (!response || typeof response !== 'object') return response;
+  const record = response as Record<string, unknown>;
+  const keys = Object.keys(record);
+  if (keys.length === 1 && Array.isArray(record[keys[0]])) {
+    return record[keys[0]];
+  }
+  // Known common keys in GTM list responses
+  if (Array.isArray((record as any).account)) return (record as any).account;
+  if (Array.isArray((record as any).container)) return (record as any).container;
+  if (Array.isArray((record as any).tag)) return (record as any).tag;
+  if (Array.isArray((record as any).trigger)) return (record as any).trigger;
+  if (Array.isArray((record as any).variable)) return (record as any).variable;
+  if (Array.isArray((record as any).workspace)) return (record as any).workspace;
+  if (Array.isArray((record as any).zone)) return (record as any).zone;
+  if (Array.isArray((record as any).folder)) return (record as any).folder;
+  if (Array.isArray((record as any).client)) return (record as any).client;
+  if (Array.isArray((record as any).environment)) return (record as any).environment;
+  if (Array.isArray((record as any).destination)) return (record as any).destination;
+  if (Array.isArray((record as any).versionHeader)) return (record as any).versionHeader;
+  if (Array.isArray((record as any).gtagConfig)) return (record as any).gtagConfig;
+  if (Array.isArray((record as any).transformation)) return (record as any).transformation;
+  if (Array.isArray((record as any).userPermission)) return (record as any).userPermission;
+  return response;
+}
+
 export class Gtm implements INodeType {
   description:INodeTypeDescription = {
-    displayName: 'Google Tag Manager',
-    name: 'gtm',
+    displayName: 'Google Tag Manager (Improved)',
+    name: 'gtmImproved',
     group: ['transform'],
     version: 1,
     description: 'Use the Google Tag Manager API',
-    defaults:{ name: 'Google Tag Manager' },
+    defaults:{ name: 'GTM (Improved)' },
     icon: 'file:gtm.svg',
     // @ts-ignore - node-class-description-inputs-wrong
     inputs: [{ type: NodeConnectionType.Main }],
@@ -1198,7 +1226,20 @@ export class Gtm implements INodeType {
 
         const responseData = await this.helpers.requestOAuth2.call(this, 'googleTagManagerOAuth2Api', requestConf);
 
-        returnData.push(JSON.parse(responseData));
+        const parsed = JSON.parse(responseData);
+        const isListOperation = /List/i.test(operation) || /EntitiesList/i.test(operation);
+        if (isListOperation) {
+          const simplified = extractArrayFromListResponse(parsed);
+          if (Array.isArray(simplified)) {
+            for (const element of simplified) {
+              returnData.push(element);
+            }
+          } else {
+            returnData.push(simplified);
+          }
+        } else {
+          returnData.push(parsed);
+        }
       } catch (error) {
         throw new NodeApiError(this.getNode(), {
           message: `Error calling GTM API: ${error.message}`,

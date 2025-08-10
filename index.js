@@ -1,11 +1,11 @@
 // This file ensures n8n can find and load your nodes and credentials
-const { Gtm } = require('./dist/nodes/Gtm/Gtm.node.js');
+const { GtmImproved } = require('./dist/nodes/GTM/GtmImproved.node.js');
 
 module.exports = {
-	nodeTypes: {
-		gtm: Gtm,
-	},
-	credentialTypes: {
-		GoogleTagManagerApi: require('./dist/credentials/GoogleTagManagerApi.credentials.js').GoogleTagManagerApi,
-	},
+  nodeTypes: {
+    gtmImproved: GtmImproved,
+  },
+  credentialTypes: {
+    GoogleTagManagerApi: require('./dist/credentials/GoogleTagManagerApi.credentials.js').GoogleTagManagerApi,
+  },
 };
